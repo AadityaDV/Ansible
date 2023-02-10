@@ -1,0 +1,8 @@
+---
+- name: Default playbook
+  hosts: all
+  become: true
+#  become_user: root
+  roles:
+  - role: dnf-automatic
+    tags: dnf

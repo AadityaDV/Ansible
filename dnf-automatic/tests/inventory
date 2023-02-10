@@ -1,0 +1,22 @@
+
+[patch]
+hostname1
+hostname2
+
+[patch:vars]
+#OnCalendar Event for NotifyOnly timer,to be added in  YYYY-MM-DD HH:MM format
+Notify_Timer= Thu,Fri *-*-* 12:00:00
+
+#Comma seperated email addresses to send notifications to.
+mailing_list= 
+
+#Randomized delay variable. (default 60m if not defined)
+RandomDelay= 15m
+
+#OnCalendar Event for Installing patches,to be added in YYYY-MM-DD HH:MM format
+Update_Timer= 2023-02-09 12:30:00
+
+#State of the dnf-automatic-install.timer service, options are started,restarted,stopped. Default is stopped
+service_state= started
+
+

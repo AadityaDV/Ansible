@@ -1,0 +1,80 @@
+---
+# Tasks file for dnf-automatic
+  - name: Install dnf-automatic
+    yum:
+      name: dnf-automatic
+      state: latest
+
+#Uncomment this play to install postfix for mail notifications
+#  - name: Install postfix
+#    yum:
+#      name: postfix
+#      state: latest
+#    tags: Install_dnf
+#    notify: Reload & Restart postfix
+
+  - name: Install mailx
+    yum:
+      name: mailx
+      state: latest
+
+  - name: Update emit method
+    lineinfile:
+      path: /etc/dnf/automatic.conf
+      regexp: 'emit_via = *'
+      line: 'emit_via = stdio,email'
+      state: present
+
+  - name: Update Mail from list
+    lineinfile:
+      path: /etc/dnf/automatic.conf
+      regexp: 'email_from = *'
+      firstmatch: true
+      line: 'email_from = root@{{ inventory_hostname }}'
+
+  - name: Update Mail list
+    lineinfile:
+      path: /etc/dnf/automatic.conf
+      regexp: 'email_to = *'
+      firstmatch: true
+      line: 'email_to = {{ mailing_list | default(omit) }}'
+
+  - name: Edit notify-only timer
+    lineinfile:
+      path: /usr/lib/systemd/system/dnf-automatic-notifyonly.timer
+      regexp: 'OnCalendar= *'
+      line: 'OnCalendar={{ Notify_Timer | default("Tue,Fri *-*-* 08:00") }}'
+      state: present
+    notify: Reload & Restart dnf-automatic-notifyonly.timer
+
+  - name: Edit install timer
+    lineinfile:
+      path: /usr/lib/systemd/system/dnf-automatic-install.timer
+      regexp: 'OnCalendar= *'
+      line: 'OnCalendar={{ Update_Timer | default(omit) }}'
+      state: present
+#    notify: Reload & Restart/stop dnf-automatic-install.timer
+
+  - name: Edit Random Delay notify timer
+    lineinfile:
+      path: /usr/lib/systemd/system/dnf-automatic-notifyonly.timer
+      regexp: 'RandomizedDelaySec=*'
+      line: 'RandomizedDelaySec= {{ RandomDelay | default(omit) }}'
+      state: present
+    notify: Reload & Restart dnf-automatic-notifyonly.timer
+
+  - name: Edit Random Delay install timer
+    lineinfile:
+      path: /usr/lib/systemd/system/dnf-automatic-install.timer
+      regexp: 'RandomizedDelaySec=*'
+      line: 'RandomizedDelaySec= {{ RandomDelay | default(omit) }}'
+      state: present
+#    notify: Reload & Restart install timer
+
+  - name: Reload & Restart/stop dnf-automatic-install.timer
+    systemd:
+     state: "{{ service_state | default('stopped') }}"
+     daemon_reload: true
+     name: dnf-automatic-install.timer
+
+

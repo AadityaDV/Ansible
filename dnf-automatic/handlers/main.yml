@@ -1,0 +1,15 @@
+---
+# handlers file for dnf-automatic
+   - name: Reload & Restart dnf-automatic-notifyonly.timer
+     systemd:
+      state: restarted
+      daemon_reload: true
+      name: dnf-automatic-notifyonly.timer
+     tags: service_restart
+
+   - name: Reload & Restart postfix
+     systemd:
+      state: restarted
+      daemon_reload: true
+      name: postfix.service
+      enabled: true
