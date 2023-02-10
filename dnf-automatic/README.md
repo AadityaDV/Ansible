@@ -2,13 +2,17 @@ dnf-automatic
 =========
 This role can be used to schedule dnf-automatic notifyonly timer as well as dnf-automatic install timer. Clients will auto-apply available patches at the scheduled time which we need to provide as a variable.
 
+Usage
+------------
+#ansible-playbook playbook.yml -i inventory.ini
+
 Requirements
 ------------
 The client should have postfix configured (postfix will be installed in case not installed already) to send mail notifications to users. Client should also have registered to entitlement server to download patches from.
 
 Role Variables
 --------------
-#Following variables to be added in inventory file.
+Following variables to be added in inventory file.
 [patch]
 hostname1
 hostname2
